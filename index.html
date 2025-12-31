@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ESDS Cloud Services Proposal - Primary DC + DR Configurator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+.proposal-container { max-width:1400px; margin:0 auto; background:#fff; box-shadow:0 0 30px rgba(0,0,0,0.1); border-radius:15px; overflow:hidden; }
+.header-bg { background:linear-gradient(135deg, #0d6efd 0%, #6610f2 100%); color:white; padding:25px 30px; }
+.site-card { background:#fff; border:2px solid #e9ecef; border-radius:12px; margin-bottom:25px; box-shadow:0 4px 15px rgba(0,0,0,0.08); }
+.site-title { background:linear-gradient(90deg, #0d6efd, #0dcaf0); color:white; padding:15px 20px; font-weight:600; border-radius:10px 10px 0 0; }
+.input-meta { border:1px solid #dee2e6; border-radius:6px; padding:6px 10px; font-size:0.875rem; }
+.summary-box { background:linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); border-radius:12px; padding:25px; text-align:center; border:2px solid #28a745; }
+.no-print { display:block; }
+@media print { .no-print { display:none !important; } }
+.table-sm th, .table-sm td { padding:8px 12px; font-size:0.875rem; }
+</style>
+</head>
+<body>
+
+<div class="proposal-container mx-3 mx-md-0">
+    <div class="header-bg d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="fw-bold mb-0"><i class="bi bi-cloud-check"></i> ESDS Cloud Services</h2>
+            <p class="mb-0 opacity-75">Primary Data Center & Disaster Recovery Site with Managed Services</p>
+        </div>
+        <button class="btn btn-light btn-sm no-print" onclick="window.print()">
+            <i class="bi bi-download"></i> Download PDF Proposal
+        </button>
+    </div>
+
+    <div class="meta-section p-4 bg-light">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="small text-muted">Customer Name</label>
+                <input type="text" class="input-meta form-control" value="Banking Community Cloud" id="customerName">
+            </div>
+            <div class="col-md-4">
+                <label class="small text-muted">CBS Partner (if any)</label>
+                <input type="text" class="input-meta form-control" value="" id="cbsPartner">
+            </div>
+            <div class="col-md-4">
+                <label class="small text-muted">Opportunity ID</label>
+                <input type="text" class="input-meta form-control" value="ESDS-BCC-2025-001" id="opportunityId">
+            </div>
+            
+            <div class="col-md-3">
+                <label class="small text-muted">Proposal Date</label>
+                <input type="date" class="input-meta form-control" value="2025-12-31" id="proposalDate">
+            </div>
+            <div class="col-md-3">
+                <label class="small text-muted">Opportunity Received Date</label>
+                <input type="date" class="input-meta form-control" value="2025-12-15" id="receivedDate">
+            </div>
+            <div class="col-md-3">
+                <label class="small text-muted">Contract Tenure</label>
+                <input type="text" class="input-meta form-control" value="36 Months" id="tenure">
+            </div>
+            <div class="col-md-3">
+                <label class="small text-muted">Version No.</label>
+                <input type="text" class="input-meta form-control" value="v2.0" id="version">
+            </div>
+            
+            <div class="col-md-4">
+                <label class="small text-muted">Account Manager (Sales)</label>
+                <input type="text" class="input-meta form-control" value="Ms. Priya Sharma" id="accountManager">
+            </div>
+            <div class="col-md-4">
+                <label class="small text-muted">Solution Architect (Prepared By)</label>
+                <input type="text" class="input-meta form-control" value="Mr. Harshal Vispute" id="architect">
+            </div>
+            <div class="col-md-4">
+                <label class="small text-muted">Reviewed By</label>
+                <input type="text" class="input-meta form-control" value="Mr. Gaurav Godse" id="reviewer">
+            </div>
+        </div>
+    </div>
+
+    <div class="p-4">
+        <!-- PRIMARY DC -->
+        <div class="site-card">
+            <div class="site-title text-primary d-flex justify-content-between">
+                <span>PRIMARY DC SITE (Mumbai)</span>
+                <button class="btn btn-xs btn-outline-light no-print" onclick="addInstance('dc')">
+                    <i class="bi bi-plus-circle"></i> Add VM
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Instance Name</th>
+                            <th>vCPU</th>
+                            <th>RAM (GB)</th>
+                            <th>Storage (GB)</th>
+                            <th>OS/DB Selection</th>
+                            <th class="text-end">Monthly Total</th>
+                            <th class="no-print">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dc-body">
+                        <!-- Dynamic instances -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="p-3 bg-light border-top">
+                <div class="row">
+                    <div class="col-md-3"><strong>Total DC Monthly:</strong> <span id="dc-total">₹0</span></div>
+                    <div class="col-md-3"><strong>vCores:</strong> <span id="dc-vcpu">0</span></div>
+                    <div class="col-md-3"><strong>RAM:</strong> <span id="dc-ram">0 GB</span></div>
+                    <div class="col-md-3"><strong>Storage:</strong> <span id="dc-storage">0 GB</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DR SITE -->
+        <div class="site-card">
+            <div class="site-title text-secondary d-flex justify-content-between align-items-center">
+                <span>DR SITE (WARM STANDBY) - Nashik</span>
+                <div class="btn-group btn-group-sm no-print">
+                    <button class="btn btn-outline-light active" id="btn50" onclick="setRatio(0.5)">50% Size</button>
+                    <button class="btn btn-outline-light" id="btn100" onclick="setRatio(1.0)">100% Size</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Instance Name</th>
+                            <th>vCPU</th>
+                            <th>RAM (GB)</th>
+                            <th>Storage (GB)</th>
+                            <th>Replication/DRM</th>
+                            <th class="text-end">Monthly Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dr-body">
+                        <!-- Dynamic DR instances -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="p-3 bg-light border-top">
+                <div class="row">
+                    <div class="col-md-3"><strong>Total DR Monthly:</strong> <span id="dr-total">₹0</span></div>
+                    <div class="col-md-9 text-muted small">RPO: 15min | RTO: 4hrs | Async Replication</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Summary -->
+        <div class="row mt-4">
+            <div class="col-md-7">
+                <h6 class="fw-bold mb-3">Proposal Financial Summary</h6>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm">
+                        <tr class="table-light">
+                            <td>Total Annual Infrastructure & Software (DC + DR)</td>
+                            <td class="text-end fw-bold" id="sum-annual">₹ 0</td>
+                        </tr>
+                        <tr>
+                            <td>One-Time Cost (OTC) @ 10% [Setup & Migration]</td>
+                            <td class="text-end text-danger fw-bold" id="sum-otc">₹ 0</td>
+                        </tr>
+                        <tr>
+                            <td>DR Drill Charges (2 Per Year)</td>
+                            <td class="text-end" id="sum-drill">₹ 24,622</td>
+                        </tr>
+                        <tr class="table-dark">
+                            <td><strong>Total Year 1 Outflow (Excl. GST)</strong></td>
+                            <td class="text-end fw-bold text-primary" id="sum-total">₹ 0</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="summary-box">
+                    <p class="mb-1 opacity-75 small">Monthly Recurring (Combined)</p>
+                    <h4 class="text-success fw-bold" id="sum-monthly">₹ 0</h4>
+                    <hr class="border-secondary">
+                    <p class="mb-1 opacity-75 small text-info">Grand Total (Inc. 18% GST)</p>
+                    <h3 class="fw-bold text-primary" id="grand-total">₹ 0</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="text-center mt-4 no-print">
+            <button class="btn btn-success btn-lg me-3" onclick="exportProposal()">
+                <i class="bi bi-file-earmark-pdf"></i> Export PDF Proposal
+            </button>
+            <button class="btn btn-outline-primary btn-lg" onclick="loadPreset('banking')">
+                <i class="bi bi-cloud-check"></i> Load Banking Preset
+            </button>
+        </div>
+    </div>
+
+    <!-- T&Cs -->
+    <div class="tc-section p-4 bg-gradient" style="background:linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);">
+        <h6 class="fw-bold text-dark mb-4">STANDARD TERMS & CONDITIONS (T&Cs)</h6>
+        <div class="row">
+            <div class="col-md-6">
+                <ol class="ps-3 small">
+                    <li><strong>Contract Validity:</strong> This proposal is valid for 30 days from the date of issue.</li>
+                    <li><strong>Service Availability:</strong> ESDS guarantees 99.95% uptime for the eNlight Cloud infrastructure.</li>
+                    <li><strong>OTC Formula:</strong> One-Time Cost is calculated as <code>OTC = (Total Annual Recur.) × 10%</code> and is payable 100% upfront.</li>
+                    <li><strong>Payment Terms:</strong> Monthly recurring charges are payable in advance within 7 days of invoice generation.</li>
+                </ol>
+            </div>
+            <div class="col-md-6">
+                <ol class="ps-3 small" start="5">
+                    <li><strong>Taxes:</strong> GST @ 18% is applicable on all components as per Govt. norms.</li>
+                    <li><strong>RPO/RTO:</strong> For DR site, RPO is 15 minutes and RTO is 4 hours, subject to application architecture.</li>
+                    <li><strong>Termination:</strong> 90 days notice period for exit, subject to completion of minimum lock-in period if specified in SLA.</li>
+                    <li><strong>Compliance:</strong> Environment is compliant with RBI / CERT-In guidelines for Banking Community Cloud.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let instances = {
+    dc: [
+        {name: 'CBS-DB-01', vcpu:32, ram:256, storage:1000, os:'RHEL', db:'Oracle', price:11756.21},
+        {name: 'MIS-UAT-DB', vcpu:32, ram:256, storage:1000, os:'RHEL', db:'NA', price:11756.21},
+        {name: 'VM-Pool-001', vcpu:4, ram:36, storage:200, os:'Windows', db:'NA', price:1687.44}
+    ],
+    dr: []
+};
+let drRatio = 0.5;
+
+function renderDC() {
+    const tbody = document.getElementById('dc-body');
+    let html = '';
+    let totalMonthly = 0, totalVcpu = 0, totalRam = 0, totalStorage = 0;
+    
+    instances.dc.forEach((inst, index) => {
+        const monthly = (inst.price * 1).toLocaleString('en-IN');
+        totalMonthly += inst.price;
+        totalVcpu += inst.vcpu;
+        totalRam += inst.ram;
+        totalStorage += inst.storage;
+        
+        html += `
+            <tr>
+                <td>${inst.name}</td>
+                <td>${inst.vcpu}</td>
+                <td>${inst.ram}</td>
+                <td>${inst.storage}</td>
+                <td>
+                    <span class="badge bg-secondary">${inst.os}</span> 
+                    <span class="badge bg-info">${inst.db}</span>
+                </td>
+                <td class="text-end fw-bold">₹${monthly}</td>
+                <td class="no-print">
+                    <button class="btn btn-sm btn-outline-danger" onclick="removeInstance('dc', ${index})">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
+            </tr>`;
+    });
+    
+    tbody.innerHTML = html;
+    document.getElementById('dc-total').textContent = `₹${totalMonthly.toLocaleString('en-IN')}`;
+    document.getElementById('dc-vcpu').textContent = totalVcpu;
+    document.getElementById('dc-ram').textContent = totalRam;
+    document.getElementById('dc-storage').textContent = totalStorage;
+    calculateTotals();
+}
+
+function renderDR() {
+    const tbody = document.getElementById('dr-body');
+    let html = '';
+    let totalMonthly = 0;
+    
+    instances.dc.forEach(inst => {
+        const drInst = {
+            name: `DR-${inst.name}`,
+            vcpu: Math.ceil(inst.vcpu * drRatio),
+            ram: Math.ceil(inst.ram * drRatio),
+            storage: Math.ceil(inst.storage * drRatio * 1.2), // +20% for backups
+            replication: 'Async',
+            price: inst.price * drRatio * 0.7 // 70% of primary cost
+        };
+        totalMonthly += drInst.price;
+        
+        html += `
+            <tr>
+                <td>${drInst.name}</td>
+                <td>${drInst.vcpu}</td>
+                <td>${drInst.ram}</td>
+                <td>${drInst.storage}</td>
+                <td>
+                    <span class="badge bg-warning">${drInst.replication}</span>
+                    <span class="badge bg-success">DRM</span>
+                </td>
+                <td class="text-end fw-bold">₹${drInst.price.toLocaleString('en-IN')}</td>
+            </tr>`;
+    });
+    
+    tbody.innerHTML = html;
+    document.getElementById('dr-total').textContent = `₹${totalMonthly.toLocaleString('en-IN')}`;
+    calculateTotals();
+}
+
+function calculateTotals() {
+    const dcMonthly = parseFloat(document.getElementById('dc-total').textContent.replace(/[₹,]/g, '')) || 0;
+    const drMonthly = parseFloat(document.getElementById('dr-total').textContent.replace(/[₹,]/g, '')) || 0;
+    const monthlyTotal = dcMonthly + drMonthly;
+    const annualTotal = monthlyTotal * 12;
+    const otc = annualTotal * 0.1;
+    const year1Total = annualTotal + otc + 24622;
+    const gstMonthly = monthlyTotal * 1.18;
+    
+    document.getElementById('sum-monthly').textContent = `₹${monthlyTotal.toLocaleString('en-IN')}`;
+    document.getElementById('sum-annual').textContent = `₹${annualTotal.toLocaleString('en-IN')}`;
+    document.getElementById('sum-otc').textContent = `₹${otc.toLocaleString('en-IN')}`;
+    document.getElementById('sum-total').textContent = `₹${year1Total.toLocaleString('en-IN')}`;
+    document.getElementById('grand-total').textContent = `₹${gstMonthly.toLocaleString('en-IN')}`;
+}
+
+function addInstance(site) {
+    const name = prompt('Instance Name:');
+    if (name) {
+        instances.dc.push({
+            name: name,
+            vcpu: 8, ram: 32, storage: 400,
+            os: 'Windows', db: 'MSSQL',
+            price: 5000 // Default price
+        });
+        renderDC();
+    }
+}
+
+function removeInstance(site, index) {
+    instances.dc.splice(index, 1);
+    renderDC();
+}
+
+function setRatio(ratio) {
+    drRatio = ratio;
+    document.querySelectorAll('#btn50, #btn100').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    renderDR();
+}
+
+function loadPreset(type) {
+    if (type === 'banking') {
+        instances.dc = [
+            {name: 'CBS-DB-Primary', vcpu:32, ram:256, storage:1000, os:'RHEL', db:'Oracle', price:11756.21},
+            {name: 'MIS-UAT-DB', vcpu:32, ram:256, storage:1000, os:'RHEL', db:'NA', price:11756.21},
+            {name: 'VM-Pool-HRMS', vcpu:4, ram:36, storage:200, os:'Windows', db:'MSSQL', price:1687.44}
+        ];
+    }
+    renderDC();
+    renderDR();
+}
+
+function exportProposal() {
+    window.print();
+}
+
+// Initialize
+document.getElementById('proposalDate').valueAsDate = new Date();
+renderDC();
+renderDR();
+</script>
+
+</body>
+</html>
