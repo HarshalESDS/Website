@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ESDS eNlight Banking Cloud - Fully Editable DC+DR Configurator V8.1</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --primary: #1e3a8a;
+    --primary-light: #3b82f6;
+    --success: #059669;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --dark: #1e293b;
+}
+
+* { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+body { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); min-height: 100vh; }
+
+.proposal-container { 
+    max-width: 100%; 
+    margin: 0 auto; 
+    background: white; 
+    box-shadow: 0 20px 60px rgba(0,0,0,0.1); 
+    border-radius: 20px; 
+    overflow: hidden;
+    min-height: 100vh;
+}
+
+.page-header { 
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 50%, #0d6efd 100%); 
+    color: white; 
+    padding: 2rem 2.5rem; 
+}
+
+@media (max-width: 768px) {
+    .page-header { padding: 1.5rem 1rem; }
+    .proposal-container { margin: 0.5rem; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); }
+}
+
+.meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+.meta-field { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 1.5rem; border-radius: 15px; border-left: 5px solid var(--primary-light); }
+.field-label { font-size: 0.85rem; color: #64748b; font-weight: 600; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.field-value { font-size: 1.2rem; font-weight: 700; color: var(--dark); }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; }
+.stat-card { background: white; padding: 1.5rem 1rem; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-top: 4px solid; transition: transform 0.2s; }
+.stat-card:hover { transform: translateY(-2px); }
+.stat-card.primary { border-top-color: var(--primary-light); }
+.stat-card.success { border-top-color: var(--success); }
+.stat-card.warning { border-top-color: var(--warning); }
+
+.input-group-sm .form-control { font-size: 0.875rem; max-width: 90px; text-align: center; font-weight: 600; }
+.disk-select { min-width: 85px; }
+.instance-row { background: #f8fafc; transition: all 0.2s; }
+.instance-row:hover { background: #e2e8f0; transform: scale(1.01); }
+
+.table-container { border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+.table-header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%) !important; color: white; font-weight: 700; }
+.total-row { background: linear-gradient(90deg, var(--success), #10b981) !important; color: white !important; font-weight: 800; font-size: 1.1rem; }
+.otc-row { background: linear-gradient(90deg, var(--danger), #f97316) !important; color: white !important; font-weight: 800; }
+
+.btn-modern { border-radius: 10px; font-weight: 600; padding: 0.75rem 1.5rem; transition: all 0.2s; }
+.btn-modern:hover { transform: translateY(-1px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+
+@media print {
+    body { background: white !important; }
+    .proposal-container { box-shadow: none; border-radius: 0; max-width: none; }
+    .no-print { display: none !important; }
+    input, select { border: 2px solid #ddd !important; background: white; }
+}
+
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+.pulse { animation: pulse 2s infinite; }
+</style>
+</head>
+<body>
+
+<div class="proposal-container p-0">
+    <!-- Header -->
+    <div class="page-header position-relative">
+        <div class="row align-items-center">
+            <div class="col-lg-8 col-md-7">
+                <h1 class="fw-bold mb-2 fs-3 lh-1"><i class="bi bi-cloud-check-circle-fill fs-2 me-3"></i>ESDS eNlight Banking Private Cloud</h1>
+                <p class="mb-1 fs-6 opacity-95">Fully Hosted Model V8.1 - LIVE DC+DR Configurator</p>
+                <div class="badge bg-success fs-6 px-3 py-2 fw-bold">80% Discount | Responsive | Cross-Platform</div>
+            </div>
+            <div class="col-lg-4 col-md-5 text-end mt-3 mt-md-0">
+                <div class="fs-6 fw-bold opacity-90">Proposal ID: SSPL-2025-V8.1</div>
+                <div class="fs-6 opacity-90">Generated: <span id="currentDate"></span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-4 p-lg-5">
+        <!-- Client & Controls -->
+        <div class="row mb-4">
+            <div class="col-lg-8">
+                <div class="meta-grid mb-4">
+                    <div class="meta-field">
+                        <div class="field-label">Customer</div>
+                        <input type="text" class="form-control form-control-lg fw-bold border-0 shadow-none rounded-3" id="customerName" value="SHIVKRUPA SAHAKARI PATPEDHI LTD">
+                    </div>
+                    <div class="meta-field">
+                        <div class="field-label">Solution Architect</div>
+                        <div class="field-value">Mr. Harshal Vispute</div>
+                        <div class="field-label mt-3">Account Manager</div>
+                        <div class="field-value">Mr. Sandesh Sonar</div>
+                    </div>
+                    <div class="meta-field">
+                        <div class="field-label">DR Ratio</div>
+                        <select class="form-select form-select-lg" id="drRatio" onchange="syncDR()">
+                            <option value="0.25">25% (Cold DR)</option>
+                            <option value="0.5" selected>50% (Warm DR)</option>
+                            <option value="0.75">75% (Hot DR)</option>
+                            <option value="1.0">100% (Active-Active)</option>
+                        </select>
+                    </div>
+                    <div class="meta-field">
+                        <div class="field-label">Primary DC</div>
+                        <div class="field-value text-primary fw-bold">Mumbai Tier-3</div>
+                        <div class="field-label mt-3">DR Site</div>
+                        <div class="field-value text-warning fw-bold">Bangalore Tier-3</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="fs-4 fw-bold text-primary mb-1" id="total-vcpu">296</div>
+                        <small class="text-muted">DC vCores</small>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="fs-4 fw-bold text-success mb-1" id="total-ram">2,568</div>
+                        <small class="text-muted">DC RAM (GB)</small>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="fs-4 fw-bold text-warning mb-1" id="total-storage">13,000</div>
+                        <small class="text-muted">DC Storage (GB)</small>
+                    </div>
+                    <div class="stat-card info">
+                        <div class="fs-4 fw-bold text-info mb-1" id="total-instances">53</div>
+                        <small class="text-muted">Total VMs</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="row mb-4 no-print">
+            <div class="col-lg-9">
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-success btn-modern" onclick="addInstance()"><i class="bi bi-plus-circle me-1"></i>Add VM</button>
+                    <button class="btn btn-warning btn-modern" onclick="loadPreset()"><i class="bi bi-arrow-clockwise me-1"></i>Load V8.0</button>
+                    <button class="btn btn-primary btn-modern" onclick="calculateTotals()"><i class="bi bi-calculator me-1"></i>Recalculate</button>
+                    <button class="btn btn-info btn-modern" onclick="exportConfig()"><i class="bi bi-download me-1"></i>Export JSON</button>
+                    <button class="btn btn-outline-secondary btn-modern" onclick="window.print()"><i class="bi bi-printer me-1"></i>Print PDF</button>
+                </div>
+            </div>
+            <div class="col-lg-3 text-lg-end mt-2 mt-lg-0">
+                <div class="text-success fs-5 fw-bold pulse" id="liveMonthly">₹6,59,373</div>
+                <small class="text-muted">Live Monthly Total</small>
+            </div>
+        </div>
+
+        <!-- DC Instances -->
+        <h4 class="fw-bold mb-4 text-primary border-bottom pb-2"><i class="bi bi-server me-2"></i>PRIMARY DC INSTANCES (Mumbai) - FULLY EDITABLE</h4>
+        <div class="table-responsive table-container mb-5">
+            <table class="table table-hover">
+                <thead class="table-header">
+                    <tr>
+                        <th>Instance Name</th>
+                        <th>vCPU <small>(x2, min 2)</small></th>
+                        <th>vRAM <small>(x4GB, min 4)</small></th>
+                        <th>OS Disk <small>(x10GB, min 50)</small></th>
+                        <th>Disk Type</th>
+                        <th>OS/DB</th>
+                        <th class="text-end">Monthly (₹)</th>
+                        <th class="no-print text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="dcInstances"></tbody>
+            </table>
+        </div>
+
+        <!-- DR Instances -->
+        <h4 class="fw-bold mb-4 text-warning border-bottom pb-2"><i class="bi bi-shield-check me-2"></i>DR INSTANCES (Bangalore) - AUTO-SYNCED</h4>
+        <div class="table-responsive table-container mb-5">
+            <table class="table table-hover">
+                <thead class="table-warning">
+                    <tr>
+                        <th>Instance Name</th>
+                        <th>vCPU</th>
+                        <th>vRAM</th>
+                        <th>Storage</th>
+                        <th>Replication</th>
+                        <th class="text-end">Monthly (₹)</th>
+                    </tr>
+                </thead>
+                <tbody id="drInstances"></tbody>
+            </table>
+        </div>
+
+        <!-- Financial Summary -->
+        <div class="row">
+            <div class="col-lg-8">
+                <h4 class="fw-bold mb-4 text-success border-bottom pb-2">FINANCIAL SUMMARY (Excl. 18% GST)</h4>
+                <div class="table-responsive table-container">
+                    <table class="table">
+                        <tbody>
+                            <tr><td><strong>PRIMARY DC Monthly</strong></td><td class="text-end fs-4 fw-bold text-primary" id="dcMonthlyTotal">₹5,18,190</td></tr>
+                            <tr><td><strong>DR SITE Monthly</strong></td><td class="text-end fs-4 fw-bold text-warning" id="drMonthlyTotal">₹1,41,183</td></tr>
+                            <tr class="table-primary"><td><strong>TOTAL MONTHLY MRC</strong></td><td class="text-end fs-3 fw-bold text-primary" id="totalMonthly">₹6,59,373</td></tr>
+                            <tr class="table-danger"><td><strong>ONE-TIME COST (OTC)</strong></td><td class="text-end fs-4 fw-bold text-danger" id="totalOTC">₹6,12,830</td></tr>
+                            <tr class="table-success"><td><strong>ANNUAL TOTAL (ARC)</strong></td><td class="text-end fs-3 fw-bold text-success" id="totalAnnual">₹79,12,482</td></tr>
+                            <tr class="table-info"><td><strong>5-YEAR TCV (Excl GST)</strong></td><td class="text-end fs-2 fw-bold text-info" id="totalTCV">₹3,95,62,408</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="text-center p-4 bg-gradient border rounded-4" style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border: 2px solid var(--primary-light);">
+                    <h5 class="fw-bold text-primary mb-3"><i class="bi bi-rocket-takeoff"></i> Deployment Ready</h5>
+                    <div class="fs-5 fw-bold text-success mb-2">4-8 Weeks</div>
+                    <div class="text-muted mb-4">Post PO + OTC Payment</div>
+                    <div class="no-print">
+                        <button class="btn btn-success btn-lg w-100 mb-2 btn-modern" onclick="window.print()">
+                            <i class="bi bi-file-earmark-pdf me-2"></i>Print PDF
+                        </button>
+                        <button class="btn btn-primary btn-lg w-100 btn-modern" onclick="exportConfig()">
+                            <i class="bi bi-download me-2"></i>Export Config
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="bg-light p-4 border-top">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="small text-muted">
+                    <strong>ESDS Software Solution Ltd.</strong> | CIN: U72200MH2005PTC153417<br>
+                    Plot B-24/25, NICE Industrial Area, Satpur, Nashik - 422007<br>
+                    <strong>Support:</strong> 1800-209-3006 | getintouch@esds.co.in
+                </div>
+            </div>
+            <div class="col-md-4 text-md-end small text-muted">
+                <div>Version 8.1 | Responsive Configurator | © 2025 ESDS</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let instances = [
+    {id:1, name:'CBS-DB-01', vcpu:32, ram:256, osDisk:1000, diskType:'NVMe', os:'RHEL', db:'Oracle'},
+    {id:2, name:'CBS-DB-02', vcpu:32, ram:256, osDisk:1000, diskType:'NVMe', os:'RHEL', db:'Oracle'},
+    {id:3, name:'MIS-UAT-DB', vcpu:32, ram:256, osDisk:1000, diskType:'SSD', os:'RHEL', db:'NA'},
+    {id:4, name:'VM-HRMS-01', vcpu:4, ram:36, osDisk:200, diskType:'SSD', os:'Windows', db:'MSSQL'}
+];
+
+const pricing = {
+    vcpu: 37.72,  // ₹/vCPU/month after 80% discount
+    ram: 12.00,   // ₹/GB/month
+    disk: {HDD: 0.89, SSD: 2.48, NVMe: 9.15}  // ₹/GB/month
+};
+
+let drRatio = 0.5;
+
+function snapToFactor(value, factor, min) {
+    const snapped = Math.max(min, Math.ceil(parseFloat(value) / factor) * factor);
+    return Math.round(snapped * 100) / 100;
+}
+
+function renderDC() {
+    const tbody = document.getElementById('dcInstances');
+    let html = '', totalVcpu = 0, totalRam = 0, totalStorage = 0, totalCost = 0;
+    
+    instances.forEach((inst, index) => {
+        const cost = (inst.vcpu * pricing.vcpu) + (inst.ram * pricing.ram) + (inst.osDisk * pricing.disk[inst.diskType]);
+        totalVcpu += inst.vcpu;
+        totalRam += inst.ram;
+        totalStorage += inst.osDisk;
+        totalCost += cost;
+        
+        html += `
+        <tr class="instance-row align-middle">
+            <td>
+                <input class="form-control form-control-sm fw-bold mb-1" value="${inst.name}" 
+                       onchange="instances[${index}].name=this.value; renderDR();">
+                <small class="text-muted">ID: ${inst.id}</small>
+            </td>
+            <td>
+                <input class="form-control form-control-sm text-primary fw-bold text-end" type="number" min="2" step="2" 
+                       value="${inst.vcpu}" onchange="instances[${index}].vcpu=snapToFactor(this.value,2,2); this.value=instances[${index}].vcpu; updateInstance(${index});">
+            </td>
+            <td>
+                <input class="form-control form-control-sm text-success fw-bold text-end" type="number" min="4" step="4" 
+                       value="${inst.ram}" onchange="instances[${index}].ram=snapToFactor(this.value,4,4); this.value=instances[${index}].ram; updateInstance(${index});">
+            </td>
+            <td>
+                <input class="form-control form-control-sm text-info fw-bold text-end" type="number" min="50" step="10" 
+                       value="${inst.osDisk}" onchange="instances[${index}].osDisk=snapToFactor(this.value,10,50); this.value=instances[${index}].osDisk; updateInstance(${index});">
+            </td>
+            <td>
+                <select class="form-select form-select-sm disk-select" onchange="instances[${index}].diskType=this.value; updateInstance(${index});">
+                    <option value="HDD" ${inst.diskType=='HDD'?'selected':''}>HDD</option>
+                    <option value="SSD" ${inst.diskType=='SSD'?'selected':''}>SSD</option>
+                    <option value="NVMe" ${inst.diskType=='NVMe'?'selected':''}>NVMe</option>
+                </select>
+            </td>
+            <td>
+                <span class="badge bg-secondary me-1">${inst.os}</span>
+                <span class="badge bg-info">${inst.db}</span>
+            </td>
+            <td class="text-end fs-5 fw-bold text-success">₹${Math.round(cost).toLocaleString()}</td>
+            <td class="no-print text-center">
+                <button class="btn btn-sm btn-outline-danger" onclick="removeInstance(${index})" title="Delete">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+        </tr>`;
+    });
+    
+    tbody.innerHTML = html;
+    updateStats(totalVcpu, totalRam, totalStorage, totalCost);
+    renderDR();
+}
+
+function updateInstance(index) {
+    calculateTotals();
+    renderDC();
+}
+
+function renderDR() {
+    const tbody = document.getElementById('drInstances');
+    let html = '', drTotalCost = 0;
+    const ratio = parseFloat(document.getElementById('drRatio').value);
+    
+    instances.forEach(inst => {
+        const drVcpu = Math.ceil(inst.vcpu * ratio);
+        const drRam = Math.ceil(inst.ram * ratio);
+        const drStorage = Math.ceil(inst.osDisk * ratio * 1.2); // +20% for snapshots
+        const drCost = ((inst.vcpu * pricing.vcpu) + (inst.ram * pricing.ram) + (inst.osDisk * pricing.disk[inst.diskType])) * ratio * 0.7;
+        drTotalCost += drCost;
+        
+        html += `
+        <tr>
+            <td><strong>DR-${inst.name}</strong></td>
+            <td class="fw-bold">${drVcpu}</td>
+            <td class="fw-bold">${drRam}</td>
+            <td class="fw-bold">${drStorage}GB</td>
+            <td><span class="badge bg-success">Async</span> <span class="badge bg-primary">RPO:15m</span></td>
+            <td class="text-end fs-5 fw-bold text-warning">₹${Math.round(drCost).toLocaleString()}</td>
+        </tr>`;
+    });
+    
+    tbody.innerHTML = html;
+    document.getElementById('drMonthlyTotal').textContent = `₹${Math.round(drTotalCost).toLocaleString()}`;
+}
+
+function updateStats(vcpu, ram, storage, dcCost) {
+    document.getElementById('total-vcpu').textContent = vcpu;
+    document.getElementById('total-ram').textContent = Math.round(ram);
+    document.getElementById('total-storage').textContent = Math.round(storage);
+    document.getElementById('total-instances').textContent = instances.length;
+    document.getElementById('dcMonthlyTotal').textContent = `₹${Math.round(dcCost).toLocaleString()}`;
+}
+
+function calculateTotals() {
+    let dcTotal = 0, drTotal = 0;
+    
+    instances.forEach(inst => {
+        const dcCost = (inst.vcpu * pricing.vcpu) + (inst.ram * pricing.ram) + (inst.osDisk * pricing.disk[inst.diskType]);
+        const drCost = dcCost * parseFloat(document.getElementById('drRatio').value) * 0.7;
+        dcTotal += dcCost;
+        drTotal += drCost;
+    });
+    
+    const totalMonthly = dcTotal + drTotal;
+    const totalAnnual = totalMonthly * 12;
+    const otc = totalAnnual * 0.1;
+    const totalTCV = totalAnnual * 5;
+    
+    document.getElementById('liveMonthly').textContent = `₹${Math.round(totalMonthly).toLocaleString()}`;
+    document.getElementById('totalMonthly').textContent = `₹${Math.round(totalMonthly).toLocaleString()}`;
+    document.getElementById('totalAnnual').textContent = `₹${Math.round(totalAnnual).toLocaleString()}`;
+    document.getElementById('totalOTC').textContent = `₹${Math.round(otc).toLocaleString()}`;
+    document.getElementById('totalTCV').textContent = `₹${Math.round(totalTCV).toLocaleString()}`;
+}
+
+function addInstance() {
+    const name = prompt('Instance Name (e.g., APP-Server-01):') || `VM-${instances.length + 1}`;
+    instances.push({
+        id: Date.now(),
+        name: name,
+        vcpu: 4, ram: 16, osDisk: 100, diskType: 'SSD', os: 'Windows', db: 'NA'
+    });
+    renderDC();
+}
+
+function removeInstance(index) {
+    if (confirm('Delete this instance? DC+DR will be updated.')) {
+        instances.splice(index, 1);
+        renderDC();
+    }
+}
+
+function loadPreset() {
+    if (confirm('Load V8.0 Excel configuration? Current changes will be lost.')) {
+        instances = [
+            {id:1, name:'CBS-DB-01', vcpu:32, ram:256, osDisk:1000, diskType:'NVMe', os:'RHEL', db:'Oracle'},
+            {id:2, name:'CBS-DB-02', vcpu:32, ram:256, osDisk:1000, diskType:'NVMe', os:'RHEL', db:'Oracle'},
+            {id:3, name:'MIS-UAT-DB', vcpu:32, ram:256, osDisk:1000, diskType:'SSD', os:'RHEL', db:'NA'},
+            {id:4, name:'VM-HRMS-Pool', vcpu:4, ram:36, osDisk:200, diskType:'SSD', os:'Windows', db:'MSSQL'}
+        ];
+        renderDC();
+    }
+}
+
+function syncDR() {
+    drRatio = parseFloat(document.getElementById('drRatio').value);
+    renderDR();
+    calculateTotals();
+}
+
+function exportConfig() {
+    const config = {
+        version: '8.1',
+        timestamp: new Date().toISOString(),
+        customer: document.getElementById('customerName').value,
+        drRatio: drRatio,
+        instances: instances,
+        pricing: pricing,
+        totals: {
+            dcMonthly: parseFloat(document.getElementById('dcMonthlyTotal').textContent.replace(/[₹,]/g, '')),
+            drMonthly: parseFloat(document.getElementById('drMonthlyTotal').textContent.replace(/[₹,]/g, '')),
+            totalMonthly: parseFloat(document.getElementById('totalMonthly').textContent.replace(/[₹,]/g, ''))
+        }
+    };
+    const blob = new Blob([JSON.stringify(config, null, 2)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `ESDS-Config-${new Date().toISOString().split('T')[0]}.json`; a.click();
+}
+
+// Initialize
+document.getElementById('currentDate').textContent = new Date().toLocaleString('en-IN');
+renderDC();
+calculateTotals();
+</script>
+</body>
+</html>
